@@ -17,10 +17,8 @@ import { FaFlag } from 'react-icons/fa';
 import { Link as RouteLink } from 'react-router-dom';
 
 const Logo = () => {
-  const [isLargerThan430] = useMediaQuery('(min-width: 430px)');
-
   return (
-    <Heading as="h1" fontSize={isLargerThan430 ? '2xl' : 'inherit'}>
+    <Heading as="h1" fontSize={{ base: 'xl', md: '2xl' }}>
       Where's Waldo?
     </Heading>
   );
