@@ -1,10 +1,19 @@
 import React from 'react';
-import { ChakraProvider, Heading } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
+import { HashRouter, Route, Routes } from 'react-router-dom';
+import Layout from './Layout';
+import Home from './components/Home';
 
 const App = () => {
   return (
     <ChakraProvider>
-      <Heading as="h1">Hello World!</Heading>
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+          </Route>
+        </Routes>
+      </HashRouter>
     </ChakraProvider>
   );
 };
