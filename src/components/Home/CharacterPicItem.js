@@ -6,7 +6,7 @@ const CharacterPicItem = ({ imgSrc, label }) => {
     <Box borderRadius="md" overflow="hidden" bg="red.500">
       <Image boxSize="150px" src={imgSrc} alt={label} fallback />
       <Text align="center" color="white">
-        label
+        {label}
       </Text>
     </Box>
   );

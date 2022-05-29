@@ -11,7 +11,6 @@ import {
   VStack,
   OrderedList,
   ListItem,
-  Image,
 } from '@chakra-ui/react';
 import { Link as RouteLink } from 'react-router-dom';
 import CharacterPicItem from './CharacterPicItem';
