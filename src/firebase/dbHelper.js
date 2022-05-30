@@ -1,4 +1,11 @@
-import { collection, doc, getDoc, getDocs, query } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+} from 'firebase/firestore';
 import { db } from '.';
 
 export const getHitBox = async (characterName) => {
@@ -21,4 +28,11 @@ export const getCharacters = async () => {
   });
 
   return characters;
+};
+
+export const recordTheScore = async (name, time) => {
+  await addDoc(collection(db, 'scoreboard'), {
+    name,
+    time: `${time}s`,
+  });
 };
