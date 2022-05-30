@@ -33,6 +33,21 @@ export const getCharacters = async () => {
 export const recordTheScore = async (name, time) => {
   await addDoc(collection(db, 'scoreboard'), {
     name,
-    time: `${time}s`,
+    time,
   });
+};
+
+export const getScoreboard = async (setScoresCb) => {
+  const querySnapshot = await getDocs(collection(db, 'scoreboard'));
+
+  const tempData = [];
+  querySnapshot.forEach((entry) => {
+    tempData.push(entry);
+  });
+
+  const scores = tempData.map((item) => item.data());
+
+  scores.sort((a, b) => a.time - b.time);
+
+  setScoresCb(scores);
 };
