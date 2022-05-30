@@ -1,4 +1,11 @@
-import { Container, Box, Image } from '@chakra-ui/react';
+import {
+  Container,
+  Box,
+  Image,
+  Button,
+  Flex,
+  useDisclosure,
+} from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import GameImg from '../../assets/game-image.jpg';
 import {
@@ -8,41 +15,81 @@ import {
 } from '../../utils';
 import { getCharacters, getHitBox } from '../../firebase/dbHelper';
 import PopUp from './PopUpMenu';
+import GameOverModal from './GameOverModal';
+import uniqid from 'uniqid';
 
 const Game = () => {
-  const [characters, setCharacters] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [hasClickedOnImg, setHasClickedOnImg] = useState(false);
+  const [characters, setCharacters] = useState([]);
+  const [currCoordinate, setCurrCoordinate] = useState([]);
   const [popUpPos, setPopUpPos] = useState({ top: 0, left: 0 });
   const [isPopupActive, setIsPopUpActive] = useState(false);
+  const [startTime, setStartTime] = useState(0);
 
+  const [totalTime, setTotalTime] = useState(0);
+
+  const [start, setStart] = useState(false);
   useEffect(() => {
-    const retrieveCharacters = async () => {
-      const temp = await getCharacters();
-
-      setCharacters(temp);
-    };
-
-    retrieveCharacters();
+    setStart(false);
+    setIsPopUpActive(false);
   }, []);
+
+  const startTheGame = async () => {
+    const names = await getCharacters();
+    const temp = [];
+
+    names.forEach((name) => {
+      temp.push({
+        name,
+        isFound: false,
+      });
+    });
+    setStartTime(Date.now());
+    setStart(true);
+
+    setCharacters(temp);
+  };
 
   const handleOnClick = (e) => {
     setIsPopUpActive(true);
     const pos = calculatePos(e);
-    console.log(pos);
+    setCurrCoordinate(calculateRelativeCoordinateOnClickEvent(e));
     setPopUpPos({ top: pos[1], left: pos[0] });
-
-    // await handleOnCharacterChoice('characterName', e);
   };
 
-  const handleOnCharacterChoice = async (characterName, e) => {
-    const coordinate = calculateRelativeCoordinateOnClickEvent(e);
-    console.log(e);
+  const resetState = () => {
+    setStart(false);
+    setCharacters([]);
+    setIsPopUpActive(false);
+  };
+
+  const handleOnCharacterChoice = async (characterName) => {
     try {
       const hitBox = await getHitBox(characterName);
 
-      if (isInTheHitBox(hitBox, coordinate)) {
-        alert(`You found ${characterName}!`);
+      // check if player has found the given character on not
+      // in the backend
+      if (isInTheHitBox(hitBox, currCoordinate)) {
+        setIsPopUpActive(false);
+        const tempCharacters = [...characters];
+
+        const chaIdx = tempCharacters.findIndex(
+          (cha) => cha.name === characterName
+        );
+
+        tempCharacters[chaIdx].isFound = true;
+
+        if (tempCharacters.every((cha) => cha.isFound)) {
+          // alert(
+          //   `It took you ${Math.floor((Date.now() - startTime) / 1000)} seconds`
+          // );
+          setTotalTime(Math.floor((Date.now() - startTime) / 1000));
+          onOpen();
+          resetState();
+        }
+
+        setCharacters(tempCharacters);
       } else {
         alert(`That wasn't ${characterName}.`);
       }
@@ -52,16 +99,24 @@ const Game = () => {
   };
 
   return (
-    <Box w="full" mb={10}>
-      <Container maxW="1920px" pos="relative">
-        <PopUp
-          names={characters}
-          position={popUpPos}
-          isActive={isPopupActive}
-        />
-        <Image src={GameImg} w="full" onClick={handleOnClick} />
-      </Container>
-    </Box>
+    <Flex w="full" mb={10} justify="center">
+      <GameOverModal time={totalTime} isOpen={isOpen} onClose={onClose} />
+      {start ? (
+        <Container maxW="1920px" pos="relative">
+          <PopUp
+            names={characters.map((cha) => cha.name)}
+            position={popUpPos}
+            isActive={isPopupActive}
+            choiceOnClick={handleOnCharacterChoice}
+          />
+          <Image src={GameImg} w="full" onClick={handleOnClick} />
+        </Container>
+      ) : (
+        <Button colorScheme="blue" mt={4} onClick={startTheGame}>
+          Start the Game
+        </Button>
+      )}
+    </Flex>
   );
 };
 

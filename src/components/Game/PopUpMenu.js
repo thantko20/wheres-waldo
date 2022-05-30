@@ -1,11 +1,11 @@
 import { Box, Flex, Heading, VStack, Text, Button } from '@chakra-ui/react';
 
-const PopUp = ({ names, isActive, position: { top, left } }) => {
-  if (isActive) {
+const PopUp = ({ names, isActive, position: { top, left }, choiceOnClick }) => {
+  if (isActive && names) {
     return (
       <Box
         pos="absolute"
-        top={`${top - 12}px`}
+        top={`${top - 14}px`}
         left={`${left}px`}
         pointerEvents="none"
       >
@@ -39,6 +39,7 @@ const PopUp = ({ names, isActive, position: { top, left } }) => {
                 color="blue.900"
                 size="sm"
                 fontWeight="medium"
+                onClick={() => choiceOnClick(name)}
               >
                 <Text>{name[0].toUpperCase() + name.slice(1)}</Text>
               </Button>
