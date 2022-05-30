@@ -1,10 +1,11 @@
 import {
   Container,
-  Box,
   Image,
   Button,
   Flex,
   useDisclosure,
+  Text,
+  HStack,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import GameImg from '../../assets/game-image.jpg';
@@ -16,7 +17,6 @@ import {
 import { getCharacters, getHitBox } from '../../firebase/dbHelper';
 import PopUp from './PopUpMenu';
 import GameOverModal from './GameOverModal';
-import uniqid from 'uniqid';
 
 const Game = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -109,6 +109,20 @@ const Game = () => {
             isActive={isPopupActive}
             choiceOnClick={handleOnCharacterChoice}
           />
+          <Flex gap={1} mb={4}>
+            <Text>Characters left to be found:</Text>
+            <HStack>
+              {characters
+                .filter((cha) => !cha.isFound)
+                .map((cha, idx) => {
+                  return (
+                    <Text key={idx} fontWeight="semibold">
+                      {cha.name[0].toUpperCase() + cha.name.slice(1)}
+                    </Text>
+                  );
+                })}
+            </HStack>
+          </Flex>
           <Image src={GameImg} w="full" onClick={handleOnClick} />
         </Container>
       ) : (

@@ -5,7 +5,7 @@ const PopUp = ({ names, isActive, position: { top, left }, choiceOnClick }) => {
     return (
       <Box
         pos="absolute"
-        top={`${top - 14}px`}
+        top={`${top + 22}px`}
         left={`${left}px`}
         pointerEvents="none"
       >
