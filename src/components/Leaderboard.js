@@ -8,34 +8,15 @@ import {
   Th,
   Tbody,
   Td,
-  Heading,
 } from '@chakra-ui/react';
-import { collection, getDocs } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { db } from '../firebase';
+import { getScoreboard } from '../firebase/dbHelper';
 
 const Leaderboard = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const getData = async () => {
-      const querySnapshot = await getDocs(collection(db, 'scoreboard'));
-
-      const tempData = [];
-      querySnapshot.forEach((entry) => {
-        tempData.push(entry);
-      });
-
-      setData(() => {
-        const scores = tempData.map((item) => item.data());
-
-        scores.sort((a, b) => a.time - b.time);
-
-        return scores;
-      });
-    };
-
-    getData();
+    getScoreboard(setData);
   }, []);
 
   return (
