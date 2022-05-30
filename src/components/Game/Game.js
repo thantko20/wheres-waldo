@@ -1,13 +1,4 @@
-import {
-  Container,
-  Box,
-  Image,
-  Heading,
-  Flex,
-  VStack,
-  Text,
-  Button,
-} from '@chakra-ui/react';
+import { Container, Box, Image } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import GameImg from '../../assets/game-image.jpg';
 import {
@@ -16,31 +7,7 @@ import {
   isInTheHitBox,
 } from '../../utils';
 import { getCharacters, getHitBox } from '../../firebase/dbHelper';
-
-const PopUp = ({ names, isActive, position: { top, left } }) => {
-  if (isActive) {
-    return (
-      <Flex
-        direction="column"
-        gap={8}
-        pos="absolute"
-        top={top + 'px'}
-        left={left + 'px'}
-        bg="white"
-        color="gray.900"
-      >
-        <Heading as="h3">Who&apos; this?</Heading>
-        <VStack>
-          {names.map((name, idx) => (
-            <Button key={idx} variant="link" color="inherit">
-              <Text>{name[0].toUpperCase() + name.slice(1)}</Text>
-            </Button>
-          ))}
-        </VStack>
-      </Flex>
-    );
-  }
-};
+import PopUp from './PopUpMenu';
 
 const Game = () => {
   const [characters, setCharacters] = useState([]);
